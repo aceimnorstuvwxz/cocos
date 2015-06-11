@@ -44,6 +44,7 @@ Mesh::Mesh()
 , _glProgramState(nullptr)
 , _blend(BlendFunc::ALPHA_NON_PREMULTIPLIED)
 , _visibleChanged(nullptr)
+, _meshVertexData(nullptr)
 {
     
 }
@@ -53,11 +54,16 @@ Mesh::~Mesh()
     CC_SAFE_RELEASE(_skin);
     CC_SAFE_RELEASE(_meshIndexData);
     CC_SAFE_RELEASE(_glProgramState);
+    CC_SAFE_RELEASE(_meshVertexData);
 }
 
 GLuint Mesh::getVertexBuffer() const
 {
     return _meshIndexData->getVertexBuffer()->getVBO();
+}
+
+void Mesh::printAddress() const{
+        CCLOG("%x, %x", _meshIndexData, _meshIndexData->getVertexBuffer());
 }
 
 bool Mesh::hasVertexAttrib(int attrib) const
@@ -147,10 +153,10 @@ Mesh* Mesh::create(const std::vector<float>& vertices, int perVertexSizeInFloat,
     auto meshvertexdata = MeshVertexData::create(meshdata);
     auto indexData = meshvertexdata->getMeshIndexDataByIndex(0);
     
-    return create("", indexData);
+    return create("", indexData, nullptr, meshvertexdata);
 }
 
-Mesh* Mesh::create(const std::string& name, MeshIndexData* indexData, MeshSkin* skin)
+Mesh* Mesh::create(const std::string& name, MeshIndexData* indexData, MeshSkin* skin, MeshVertexData* vertexData)
 {
     auto state = new (std::nothrow) Mesh();
     state->autorelease();
@@ -158,6 +164,9 @@ Mesh* Mesh::create(const std::string& name, MeshIndexData* indexData, MeshSkin* 
     state->_name = name;
     state->setMeshIndexData(indexData);
     state->setSkin(skin);
+
+    state->_meshVertexData = vertexData;
+    CC_SAFE_RETAIN(vertexData);
     
     return state;
 }
@@ -202,9 +211,11 @@ void Mesh::setSkin(MeshSkin* skin)
 
 void Mesh::setMeshIndexData(MeshIndexData* subMesh)
 {
+    CCLOG("MeshIndexData %x", subMesh);
     if (_meshIndexData != subMesh)
     {
         CC_SAFE_RETAIN(subMesh);
+
         CC_SAFE_RELEASE(_meshIndexData);
         _meshIndexData = subMesh;
         calculateAABB();

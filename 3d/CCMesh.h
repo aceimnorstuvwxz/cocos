@@ -44,6 +44,7 @@ NS_CC_BEGIN
 class Texture2D;
 class MeshSkin;
 class MeshIndexData;
+class MeshVertexData;
 class GLProgramState;
 class GLProgram;
 /** 
@@ -68,7 +69,7 @@ public:
      * create mesh
      * @lua NA
      */
-    static Mesh* create(const std::string& name, MeshIndexData* indexData, MeshSkin* skin = nullptr);
+    static Mesh* create(const std::string& name, MeshIndexData* indexData, MeshSkin* skin = nullptr, MeshVertexData* vertexData = nullptr);
     
     /**
      * get vertex buffer
@@ -76,6 +77,7 @@ public:
      * @lua NA
      */
     GLuint getVertexBuffer() const;
+    void printAddress() const;
     /**
      * has vertex attribute?
      *
@@ -203,6 +205,8 @@ protected:
     BlendFunc       _blend;
     AABB         _aabb;
     std::function<void()> _visibleChanged;
+
+    MeshVertexData* _meshVertexData; // hold strong ref to meshVertexData, when using stand alone Mesh
 };
 
 // end of 3d group

@@ -336,6 +336,7 @@ bool Sprite3D::initFrom(const NodeDatas& nodeDatas, const MeshDatas& meshdatas, 
     
     return true;
 }
+
 Sprite3D* Sprite3D::createSprite3DNode(NodeData* nodedata,ModelData* modeldata,const MaterialDatas& matrialdatas)
 {
     auto sprite = new (std::nothrow) Sprite3D();
@@ -391,6 +392,7 @@ Sprite3D* Sprite3D::createSprite3DNode(NodeData* nodedata,ModelData* modeldata,c
     }
     return   sprite;
 }
+
 void Sprite3D::createAttachSprite3DNode(NodeData* nodedata,const MaterialDatas& matrialdatas)
 {
     for(const auto& it : nodedata->modelNodeDatas)
@@ -409,6 +411,7 @@ void Sprite3D::createAttachSprite3DNode(NodeData* nodedata,const MaterialDatas& 
         createAttachSprite3DNode(it,matrialdatas);
     }
 }
+
 void Sprite3D::genGLProgramState(bool useLight)
 {
     _shaderUsingLight = useLight;
