@@ -245,6 +245,8 @@ Sprite3D::Sprite3D()
 , _lightMask(-1)
 , _shaderUsingLight(false)
 , _forceDepthWrite(false)
+, _turnroCgIndex(0.f) //[turnro]
+, _turnroCgEnable(false) //[turnro]
 {
 }
 
@@ -610,6 +612,19 @@ void Sprite3D::setTexture(Texture2D* texture)
         state->setTexture(texture);
     }
 }
+
+// [turnro] start
+void Sprite3D::setTurnroCgEnable(bool enable)
+{
+    _turnroCgEnable = enable;
+}
+
+void Sprite3D::setTurnroCgIndex(float ci)
+{
+    _turnroCgIndex = ci;
+}
+// [turnro] end
+
 AttachNode* Sprite3D::getAttachNode(const std::string& boneName)
 {
     auto it = _attachments.find(boneName);
@@ -754,6 +769,11 @@ void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
         }
         auto programstate = mesh->getGLProgramState();
         auto& meshCommand = mesh->getMeshCommand();
+
+        // [turnro] Color index shifting
+        if (_turnroCgEnable)
+            programstate->setUniformFloat("u_turnro_cg_index", _turnroCgIndex);
+        // [turnro] end
 
         GLuint textureID = 0;
         if(mesh->getTexture())

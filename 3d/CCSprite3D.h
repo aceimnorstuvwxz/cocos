@@ -83,6 +83,10 @@ public:
     /**set texture, set the first if multiple textures exist*/
     void setTexture(const std::string& texFile);
     void setTexture(Texture2D* texture);
+
+    /**[turnro] set color index*/
+    void setTurnroCgEnable(bool enable);
+    void setTurnroCgIndex(float ci);
     
     /**get Mesh by index*/
     Mesh* getMeshByIndex(int index) const;
@@ -234,7 +238,10 @@ protected:
     unsigned int                 _lightMask;
     bool                         _shaderUsingLight; // is current shader using light ?
     bool                         _forceDepthWrite; // Always write to depth buffer
-    
+
+    bool                         _turnroCgEnable; // [turnro] color index enable
+    float                        _turnroCgIndex; // [turnro] color index[0~127]
+
     struct AsyncLoadParam
     {
         std::function<void(Sprite3D*, void*)> afterLoadCallback; // callback after load
