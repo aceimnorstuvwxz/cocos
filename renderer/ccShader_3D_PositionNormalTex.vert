@@ -8,6 +8,12 @@ uniform vec3 u_PointLightSourcePosition[MAX_POINT_LIGHT_NUM];
 uniform vec3 u_SpotLightSourcePosition[MAX_SPOT_LIGHT_NUM];
 \n#endif\n
 
+// [turnro]Supporting Color Index shifting.
+const float TURNRO_CG_STEP = 0.0078125; // 1/128
+uniform float u_turnro_cg_index;
+varying float TurnroEdgeParaOut;
+// [turnro]-end
+
 attribute vec4 a_position;
 attribute vec2 a_texCoord;
 attribute vec3 a_normal;
@@ -45,7 +51,11 @@ void main(void)
 \n#endif\n
 
     TextureCoordOut = a_texCoord;
-    TextureCoordOut.y = 1.0 - TextureCoordOut.y;
+    // [turnro]
+    TurnroEdgeParaOut = a_texCoord.y;
+    //TextureCoordOut.y = 1.0 - TextureCoordOut.y;
+    TextureCoordOut.y = 1.0 - (a_texCoord.y + u_turnro_cg_index * TURNRO_CG_STEP);
+    // [turnro] -end
     gl_Position = CC_PMatrix * ePosition;
 }
 );
@@ -62,6 +72,7 @@ uniform vec3 u_SpotLightSourcePosition[MAX_SPOT_LIGHT_NUM];
 // [turnro]Supporting Color Index shifting.
 const float TURNRO_CG_STEP = 0.0078125; // 1/128
 uniform float u_turnro_cg_index;
+varying float TurnroEdgeParaOut;
 // [turnro]-end
 
 attribute vec3 a_position;
@@ -167,6 +178,7 @@ void main()
     TextureCoordOut = a_texCoord;
     // [turnro] shift the tex.y
     //TextureCoordOut.y = 1.0 - TextureCoordOut.y;
+    TurnroEdgeParaOut = a_texCoord.y;
     TextureCoordOut.y = 1.0 - (a_texCoord.y + u_turnro_cg_index * TURNRO_CG_STEP);
     // [turnro] end
     gl_Position = CC_PMatrix * ePosition;

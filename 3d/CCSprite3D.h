@@ -84,9 +84,12 @@ public:
     void setTexture(const std::string& texFile);
     void setTexture(Texture2D* texture);
 
-    /**[turnro] set color index*/
+    /**[turnro] set color index, set edge show*/
     void setTurnroCgEnable(bool enable);
     void setTurnroCgIndex(float ci);
+    void setTurnroEdgeEnable(bool enable);
+    void setTurnroEdgeColor(const Vec4& color);
+    void setTurnroEdgeScope(float scope);
     
     /**get Mesh by index*/
     Mesh* getMeshByIndex(int index) const;
@@ -241,7 +244,9 @@ protected:
 
     bool                         _turnroCgEnable; // [turnro] color index enable
     float                        _turnroCgIndex; // [turnro] color index[0~127]
-
+    bool                         _turnroEdgeEnable; // [turnro] edge show enable
+    Vec4                         _turnroEdgeColor; // [turnro] edge color, default WHITE
+    float                        _turnroEdgeScope; // [turnro] edge scope, if need same width edge, should set combine with unit scale, default is 0.05
     struct AsyncLoadParam
     {
         std::function<void(Sprite3D*, void*)> afterLoadCallback; // callback after load

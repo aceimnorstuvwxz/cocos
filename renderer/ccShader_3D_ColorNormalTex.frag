@@ -47,6 +47,12 @@ varying vec3 v_normal;
 
 uniform vec4 u_color;
 
+// [turnro]Supporting Color Index shifting.
+uniform float u_turnro_edge_scope;
+uniform vec4 u_turnro_edge_color;
+varying float TurnroEdgeParaOut;
+// [turnro]-end
+
 vec3 computeLighting(vec3 normalVector, vec3 lightDirection, vec3 lightColor, float attenuation)
 {
     float diffuse = max(dot(normalVector, lightDirection), 0.0);
@@ -103,10 +109,14 @@ void main(void)
     }
 \n#endif\n
 
+    vec4 tmp_color = texture2D(CC_Texture0, TextureCoordOut) * u_color;
+    if (TurnroEdgeParaOut < u_turnro_edge_scope)
+        tmp_color = u_turnro_edge_color;
+
 \n#if ((MAX_DIRECTIONAL_LIGHT_NUM > 0) || (MAX_POINT_LIGHT_NUM > 0) || (MAX_SPOT_LIGHT_NUM > 0))\n
-    gl_FragColor = texture2D(CC_Texture0, TextureCoordOut) * u_color * combinedColor;
+    gl_FragColor = tmp_color * combinedColor;
 \n#else\n
-    gl_FragColor = texture2D(CC_Texture0, TextureCoordOut) * u_color;
+    gl_FragColor = tmp_color;
 \n#endif\n
 
 }

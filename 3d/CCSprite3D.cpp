@@ -246,7 +246,10 @@ Sprite3D::Sprite3D()
 , _shaderUsingLight(false)
 , _forceDepthWrite(false)
 , _turnroCgIndex(0.f) //[turnro]
-, _turnroCgEnable(false) //[turnro]
+, _turnroCgEnable(false)
+, _turnroEdgeScope(0.05)
+, _turnroEdgeEnable(false)
+, _turnroEdgeColor(Vec4{1,1,1,1})
 {
 }
 
@@ -623,6 +626,19 @@ void Sprite3D::setTurnroCgIndex(float ci)
 {
     _turnroCgIndex = ci;
 }
+
+void Sprite3D::setTurnroEdgeEnable(bool enable)
+{
+    _turnroEdgeEnable = enable;
+}
+void Sprite3D::setTurnroEdgeColor(const Vec4& color)
+{
+    _turnroEdgeColor = color;
+}
+void Sprite3D::setTurnroEdgeScope(float scope)
+{
+    _turnroEdgeScope = scope;
+}
 // [turnro] end
 
 AttachNode* Sprite3D::getAttachNode(const std::string& boneName)
@@ -770,9 +786,14 @@ void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
         auto programstate = mesh->getGLProgramState();
         auto& meshCommand = mesh->getMeshCommand();
 
-        // [turnro] Color index shifting
+        // [turnro] Color index shifting and edge
         if (_turnroCgEnable)
             programstate->setUniformFloat("u_turnro_cg_index", _turnroCgIndex);
+        if (_turnroEdgeEnable) {
+            programstate->setUniformFloat("u_turnro_edge_scope", _turnroEdgeScope);
+            programstate->setUniformVec4("u_turnro_edge_color", _turnroEdgeColor);
+        }
+
         // [turnro] end
 
         GLuint textureID = 0;
